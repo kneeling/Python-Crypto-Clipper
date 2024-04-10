@@ -1,5 +1,8 @@
 # What is a crypto clipper?
 
+```diff
+- # Remember, this is for educaitonal purposes and i am NOT responsible for any damages.
+```
 A crypto clipper, also known as a cryptocurrency clipper, is a type of malware or malicious software designed to exploit cryptocurrency transactions. This type of malware typically operates by intercepting cryptocurrency addresses copied to the clipboard (hence the term "clipper").
 
 Here's how it works:
