@@ -17,7 +17,8 @@ Here's how it works:
 Crypto clippers can be distributed through various means such as malicious websites, phishing emails, or compromised software downloads. They are particularly insidious because they can operate silently in the background
 
 ## How to use
-``` git clone https://github.com/kneeling/Python-Crypto-Clipper.git 
+```
+git clone https://github.com/kneeling/Python-Crypto-Clipper.git 
 python3 main.py
 ```
 
